@@ -14,11 +14,15 @@ const auth = getAuth(app);
 const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
 
+  const [loading, SetLoading] = useState(true);
+
   const createUser = (email, password) => {
+    SetLoading(true);
     return createUserWithEmailAndPassword(auth, email, password);
   };
 
   const signIn = (email, password) => {
+    SetLoading(true);
     return signInWithEmailAndPassword(auth, email, password);
   };
 
@@ -30,8 +34,10 @@ const AuthProvider = ({ children }) => {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
+      SetLoading(false);
     });
-    // stop observing
+
+    // stop observing while unmounting
     return () => {
       return unsubscribe();
     };
@@ -39,6 +45,7 @@ const AuthProvider = ({ children }) => {
 
   const authInfo = {
     user,
+    loading,
     createUser,
     signIn,
     logOut,
@@ -49,3 +56,4 @@ const AuthProvider = ({ children }) => {
 };
 
 export default AuthProvider;
+// https://ema-john-simple-recap-m10.web.app
